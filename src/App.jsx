@@ -32,6 +32,28 @@ const deleteExpense = (indexToDelete) => {
 
   setExpenses(updatedExpenses);
 };
+
+
+const totalSpent = expenses.reduce(
+  (total, expense) => total + Number(expense.amount),
+  0
+);
+const highestExpense =
+  expenses.length > 0
+    ? Math.max(...expenses.map((expense) => Number(expense.amount)))
+    : 0;
+
+    const categoryTotals = expenses.reduce((acc, expense) => {
+  const category = expense.category;
+
+  if (!acc[category]) {
+    acc[category] = 0;
+  }
+
+  acc[category] += Number(expense.amount);
+
+  return acc;
+}, {});
   return (
     <div className="container">
 
@@ -46,7 +68,25 @@ const deleteExpense = (indexToDelete) => {
       <p className="subheading">
         Track and manage your daily expenses easily
       </p>
+<div className="summary-card">
+  <h2>Expense Summary</h2>
 
+  <p>
+    <strong>Total Spent:</strong> ₹{totalSpent}
+  </p>
+
+  <p>
+    <strong>Highest Expense:</strong> ₹{highestExpense}
+  </p>
+  <h3>Category Totals</h3>
+
+{Object.entries(categoryTotals).map(([category, total]) => (
+  <p key={category}>
+    <strong>{category}:</strong> ₹{total}
+  </p>
+))}
+  
+</div>
       <div className="card">
 
         <div className="input-group">
