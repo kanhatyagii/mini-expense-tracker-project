@@ -10,17 +10,33 @@ const [category, setCategory] = useState("Food");
 const [date, setDate] = useState("");
 const [expenses, setExpenses] = useState([]);
 const [filterCategory, setFilterCategory] = useState("All");
-
+const [editIndex, setEditIndex] = useState(null);
 const addExpense = () => {
-  const newExpense = {
-    title,
-    amount,
-    category,
-    date,
-  };
+  if (editIndex !== null) {
+
+    const updatedExpenses = [...expenses];
+
+    updatedExpenses[editIndex] = {
+      title,
+      amount,
+      category,
+      date,
+    };
+
+    setExpenses(updatedExpenses);
+    setEditIndex(null);
+
+  } else {
+
+    const newExpense = {
+      title,
+      amount,
+      category,
+      date,
+    };
 
   setExpenses([...expenses, newExpense]);
-
+  }
   setTitle("");
   setAmount("");
   setCategory("Food");
@@ -34,6 +50,17 @@ const deleteExpense = (indexToDelete) => {
 
   setExpenses(updatedExpenses);
 };
+const editExpense = (index) => {
+  const expense = expenses[index];
+
+  setTitle(expense.title);
+  setAmount(expense.amount);
+  setCategory(expense.category);
+  setDate(expense.date);
+
+  setEditIndex(index);
+};
+
 
 
 const totalSpent = expenses.reduce(
@@ -144,9 +171,9 @@ const filteredExpenses =
   onChange={(e) => setDate(e.target.value)}/>
         </div>
 
-        <button className="btn" onClick={addExpense}>
-          + Add Expense
-        </button>
+      <button className="btn" onClick={addExpense}>
+  {editIndex !== null ? "Update Expense" : "Add Expense"}
+</button>
 
       </div>
       <div className="expense-list">
@@ -162,6 +189,12 @@ const filteredExpenses =
 
       <p>Date: {expense.date}</p>
 
+<button
+  className="edit-btn"
+  onClick={() => editExpense(index)}
+>
+  Edit
+</button>
       <button
   className="delete-btn"
   onClick={() => deleteExpense(index)}
