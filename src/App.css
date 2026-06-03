@@ -172,3 +172,23 @@ body {
   margin: 10px 0;
   font-size: 18px;
 }
+.filter-card {
+  width: 100%;
+  max-width: 550px;
+  background: white;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+
+.filter-card label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.filter-card select {
+  width: 100%;
+  padding: 12px;
+}

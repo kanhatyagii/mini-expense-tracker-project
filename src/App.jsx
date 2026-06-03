@@ -2,12 +2,14 @@ import "./App.css";
 import expenseImage from "./assets/expense.jpg";
 import React, { useState } from "react";
 
+
 function App() {
 const [title, setTitle] = useState("");
 const [amount, setAmount] = useState("");
 const [category, setCategory] = useState("Food");
 const [date, setDate] = useState("");
 const [expenses, setExpenses] = useState([]);
+const [filterCategory, setFilterCategory] = useState("All");
 
 const addExpense = () => {
   const newExpense = {
@@ -54,6 +56,14 @@ const highestExpense =
 
   return acc;
 }, {});
+
+const filteredExpenses =
+  filterCategory === "All"
+    ? expenses
+    : expenses.filter(
+        (expense) =>
+          expense.category === filterCategory
+      );
   return (
     <div className="container">
 
@@ -86,6 +96,22 @@ const highestExpense =
   </p>
 ))}
   
+  <div className="filter-card">
+
+  <label>Filter By Category</label>
+
+  <select
+    value={filterCategory}
+    onChange={(e) => setFilterCategory(e.target.value)}
+  >
+    <option value="All">All</option>
+    <option value="Food">Food</option>
+    <option value="Travel">Travel</option>
+    <option value="Shopping">Shopping</option>
+    <option value="Bills">Bills</option>
+  </select>
+
+</div>
 </div>
       <div className="card">
 
@@ -126,7 +152,7 @@ const highestExpense =
       <div className="expense-list">
   <h2>Recent Expenses</h2>
 
-  {expenses.map((expense, index) => (
+  {filteredExpenses.map((expense, index) => (
     <div className="expense-item" key={index}>
       <h3>{expense.title}</h3>
 
