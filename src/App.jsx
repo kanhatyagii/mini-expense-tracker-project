@@ -24,6 +24,14 @@ const addExpense = () => {
   setCategory("Food");
   setDate("");
 };
+
+const deleteExpense = (indexToDelete) => {
+  const updatedExpenses = expenses.filter(
+    (_, index) => index !== indexToDelete
+  );
+
+  setExpenses(updatedExpenses);
+};
   return (
     <div className="container">
 
@@ -87,6 +95,13 @@ const addExpense = () => {
       <p>Category: {expense.category}</p>
 
       <p>Date: {expense.date}</p>
+
+      <button
+  className="delete-btn"
+  onClick={() => deleteExpense(index)}
+>
+  Delete
+</button>
     </div>
   ))}
 </div>
