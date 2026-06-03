@@ -1,7 +1,29 @@
 import "./App.css";
 import expenseImage from "./assets/expense.jpg";
+import React, { useState } from "react";
 
 function App() {
+const [title, setTitle] = useState("");
+const [amount, setAmount] = useState("");
+const [category, setCategory] = useState("Food");
+const [date, setDate] = useState("");
+const [expenses, setExpenses] = useState([]);
+
+const addExpense = () => {
+  const newExpense = {
+    title,
+    amount,
+    category,
+    date,
+  };
+
+  setExpenses([...expenses, newExpense]);
+
+  setTitle("");
+  setAmount("");
+  setCategory("Food");
+  setDate("");
+};
   return (
     <div className="container">
 
@@ -21,17 +43,20 @@ function App() {
 
         <div className="input-group">
           <label>Expense Title</label>
-          <input type="text" placeholder="Enter expense title" />
+          <input type="text" placeholder="Enter expense title" value={title}
+  onChange={(e) => setTitle(e.target.value)} />
         </div>
 
         <div className="input-group">
           <label>Amount</label>
-          <input type="number" placeholder="Enter amount" />
+          <input type="number" placeholder="Enter amount" value={amount}
+  onChange={(e) => setAmount(e.target.value)} />
         </div>
 
         <div className="input-group">
           <label>Category</label>
-          <select>
+          <select value={category}
+  onChange={(e) => setCategory(e.target.value)}>
             <option>Food</option>
             <option>Travel</option>
             <option>Shopping</option>
@@ -41,14 +66,30 @@ function App() {
 
         <div className="input-group">
           <label>Date</label>
-          <input type="date" />
+          <input type="date"  value={date}
+  onChange={(e) => setDate(e.target.value)}/>
         </div>
 
-        <button className="btn">
+        <button className="btn" onClick={addExpense}>
           + Add Expense
         </button>
 
       </div>
+      <div className="expense-list">
+  <h2>Recent Expenses</h2>
+
+  {expenses.map((expense, index) => (
+    <div className="expense-item" key={index}>
+      <h3>{expense.title}</h3>
+
+      <p>Amount: ₹{expense.amount}</p>
+
+      <p>Category: {expense.category}</p>
+
+      <p>Date: {expense.date}</p>
+    </div>
+  ))}
+</div>
     </div>
   );
 }

@@ -110,3 +110,30 @@ body {
   transform: translateY(-2px);
   opacity:0.95;
 }
+.expense-list {
+  width: 100%;
+  max-width: 600px;
+  margin-top: 30px;
+}
+
+.expense-list h2 {
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.expense-item {
+  background: white;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.expense-item h3 {
+  margin-bottom: 8px;
+  color: #4f46e5;
+}
+
+.expense-item p {
+  margin: 4px 0;
+}
