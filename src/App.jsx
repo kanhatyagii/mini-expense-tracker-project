@@ -11,6 +11,8 @@ const [date, setDate] = useState("");
 const [expenses, setExpenses] = useState([]);
 const [filterCategory, setFilterCategory] = useState("All");
 const [editIndex, setEditIndex] = useState(null);
+const [startDate, setStartDate] = useState("");
+const [endDate, setEndDate] = useState("");
 const addExpense = () => {
   if (editIndex !== null) {
 
@@ -91,7 +93,29 @@ const filteredExpenses =
         (expense) =>
           expense.category === filterCategory
       );
-      const SortedExpenses = [...filteredExpenses].sort(
+const dateFilteredExpenses = filteredExpenses.filter((expense) => {
+
+  if (!startDate && !endDate) {
+    return true;
+  }
+
+  const expenseDate = new Date(expense.date);
+
+  const start = startDate ? new Date(startDate) : null;
+  const end = endDate ? new Date(endDate) : null;
+
+  if (start && expenseDate < start) {
+    return false;
+  }
+
+  if (end && expenseDate > end) {
+    return false;
+  }
+
+  return true;
+});
+
+      const SortedExpenses = [...dateFilteredExpenses].sort(
   (a, b) => new Date(b.date) - new Date(a.date)
 );
   return (
@@ -140,6 +164,25 @@ const filteredExpenses =
     <option value="Shopping">Shopping</option>
     <option value="Bills">Bills</option>
   </select>
+
+</div>
+<div className="filter-card">
+
+  <label>Start Date</label>
+
+  <input
+    type="date"
+    value={startDate}
+    onChange={(e) => setStartDate(e.target.value)}
+  />
+
+  <label>End Date</label>
+
+  <input
+    type="date"
+    value={endDate}
+    onChange={(e) => setEndDate(e.target.value)}
+  />
 
 </div>
 </div>
