@@ -27,7 +27,7 @@ const [billsBudget, setBillsBudget] = useState(4500);
 const [transportBudget, setTransportBudget] = useState(5000);
 
 useEffect(() => {
-  fetch("http://localhost:5000/expenses")
+  fetch("https://mini-expense-tracker-project.onrender.com/expenses")
     .then((res) => res.json())
     .then((data) => {
       setExpenses(data);
@@ -50,7 +50,7 @@ if (new Date(date) > new Date()) {
   return;
 }
   if (editId !== null) {
-  fetch(`http://localhost:5000/expenses/${editId}`, {
+  fetch(`https://mini-expense-tracker-project.onrender.com/expenses/${editId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -65,7 +65,7 @@ if (new Date(date) > new Date()) {
   })
     .then((res) => res.json())
     .then(() => {
-      fetch("http://localhost:5000/expenses")
+      fetch("https://mini-expense-tracker-project.onrender.com/expenses")
         .then((res) => res.json())
         .then((data) => {
           setExpenses(data);
@@ -92,7 +92,7 @@ setNote("");
       date,
       note,
     };
-fetch("http://localhost:5000/expenses", {
+fetch("https://mini-expense-tracker-project.onrender.com/expenses", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -123,11 +123,11 @@ const formatCurrency = (amount) => {
   }).format(amount);
 };
 const deleteExpense = (id) => {
-  fetch(`http://localhost:5000/expenses/${id}`, {
+  fetch(`https://mini-expense-tracker-project.onrender.com/expenses/${id}`, {
     method: "DELETE",
   })
     .then(() => {
-      fetch("http://localhost:5000/expenses")
+      fetch("https://mini-expense-tracker-project.onrender.com/expenses")
         .then((res) => res.json())
         .then((data) => setExpenses(data));
     })
