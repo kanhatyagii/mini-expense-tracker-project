@@ -37,6 +37,10 @@ const addExpense = () => {
   alert("Amount must be greater than 0");
   return;
 }
+if (new Date(date) > new Date()) {
+  alert("Future date is not allowed");
+  return;
+}
   if (editId !== null) {
   fetch(`http://localhost:5000/expenses/${editId}`, {
     method: "PUT",
@@ -198,6 +202,20 @@ const dateFilteredExpenses = filteredExpenses.filter((expense) => {
 const SortedExpenses = [...dateFilteredExpenses].sort(
   (a, b) => new Date(b.date) - new Date(a.date)
 );
+
+const currentMonth = new Date().getMonth();
+const currentYear = new Date().getFullYear();
+
+const totalThisMonth = expenses
+  .filter((expense) => {
+    const expenseDate = new Date(expense.date);
+
+    return (
+      expenseDate.getMonth() === currentMonth &&
+      expenseDate.getFullYear() === currentYear
+    );
+  })
+  .reduce((total, expense) => total + Number(expense.amount), 0);
   return (
     <div className="container">
 
@@ -218,7 +236,10 @@ const SortedExpenses = [...dateFilteredExpenses].sort(
   <p>
     <strong>Total Spent:</strong> ₹{totalSpent}
   </p>
+<p>
+  <strong>Total This Month:</strong> ₹{totalThisMonth}
 
+</p>
   <p>
     <strong>Highest Expense:</strong> ₹{highestExpense}
   </p>
