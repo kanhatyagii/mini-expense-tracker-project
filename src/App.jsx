@@ -36,7 +36,20 @@ const addExpense = () => {
       category,
       date,
     };
-
+fetch("http://localhost:5000/expenses", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify(newExpense),
+})
+  .then((res) => res.json())
+  .then((data) => {
+    console.log(data);
+  })
+  .catch((err) => {
+    console.error(err);
+  });
   setExpenses([...expenses, newExpense]);
   }
   setTitle("");
