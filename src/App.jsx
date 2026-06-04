@@ -91,6 +91,9 @@ const filteredExpenses =
         (expense) =>
           expense.category === filterCategory
       );
+      const SortedExpenses = [...filteredExpenses].sort(
+  (a, b) => new Date(b.date) - new Date(a.date)
+);
   return (
     <div className="container">
 
@@ -179,7 +182,7 @@ const filteredExpenses =
       <div className="expense-list">
   <h2>Recent Expenses</h2>
 
-  {filteredExpenses.map((expense, index) => (
+  {SortedExpenses.map((expense, index) => (
     <div className="expense-item" key={index}>
       <h3>{expense.title}</h3>
 
