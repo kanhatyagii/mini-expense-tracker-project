@@ -33,6 +33,7 @@ GitHub Repository: https://github.com/kanhatyagii/mini-expense-tracker-project
 
 ### Database
 - SQLite — Lightweight persistent database
+- PostgreSQL (Neon) — Cloud-hosted relational database used for persistent expense storage 
 
 ### Version Control
 - Git
