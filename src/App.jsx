@@ -21,6 +21,10 @@ const [editId, setEditId] = useState(null);
 const [startDate, setStartDate] = useState("");
 const [endDate, setEndDate] = useState("");
 const [note, setNote] = useState("");
+const [foodBudget, setFoodBudget] = useState(5000);
+const [shoppingBudget, setShoppingBudget] = useState(10000);
+const [billsBudget, setBillsBudget] = useState(4500);
+const [transportBudget, setTransportBudget] = useState(5000);
 
 useEffect(() => {
   fetch("http://localhost:5000/expenses")
@@ -293,6 +297,35 @@ const totalThisMonth = expenses
     <strong>{category}:</strong> {formatCurrency(total)}
   </p>
 ))}
+<h3>Budget Status</h3>
+
+<p>
+  Food: {formatCurrency(categoryTotals.Food || 0)} / {formatCurrency(foodBudget)}
+  {(categoryTotals.Food || 0) > foodBudget && (
+    <span style={{ color: "red" }}> ⚠️ Budget Exceeded</span>
+  )}
+</p>
+
+<p>
+  Shopping: {formatCurrency(categoryTotals.Shopping || 0)} / {formatCurrency(shoppingBudget)}
+  {(categoryTotals.Shopping || 0) > shoppingBudget && (
+    <span style={{ color: "red" }}> ⚠️ Budget Exceeded</span>
+  )}
+</p>
+
+<p>
+  Bills: {formatCurrency(categoryTotals.Bills || 0)} / {formatCurrency(billsBudget)}
+  {(categoryTotals.Bills || 0) > billsBudget && (
+    <span style={{ color: "red" }}> ⚠️ Budget Exceeded</span>
+  )}
+</p>
+
+<p>
+  Transport: {formatCurrency(categoryTotals.Transport || 0)} / {formatCurrency(transportBudget)}
+  {(categoryTotals.Transport || 0) > transportBudget && (
+    <span style={{ color: "red" }}> ⚠️ Budget Exceeded</span>
+  )}
+</p>
   <div className="chart-container">
   <h3>Expense Distribution</h3>
 
