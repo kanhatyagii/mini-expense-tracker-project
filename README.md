@@ -10,9 +10,10 @@ Mini Expense Tracker is a full-stack web application that allows users to record
 
 ## Live Demo Links
 
-Frontend: To be added after deployment
+Frontend: https://mini-expense-tracker-project.vercel.app/
 
-Backend: To be added after deployment
+
+Backend: https://mini-expense-tracker-project.onrender.com
 
 GitHub Repository: https://github.com/kanhatyagii/mini-expense-tracker-project
 
