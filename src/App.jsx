@@ -12,7 +12,7 @@ import {
 function App() {
 const [title, setTitle] = useState("");
 const [amount, setAmount] = useState("");
-const [category, setCategory] = useState("Food");
+const [category, setCategory] = useState("");
 const [date, setDate] = useState("");
 const [expenses, setExpenses] = useState([]);
 const [filterCategory, setFilterCategory] = useState("All");
@@ -35,6 +35,10 @@ useEffect(() => {
 const addExpense = () => {
   if (Number(amount) <= 0) {
   alert("Amount must be greater than 0");
+  return;
+}
+if (!category) {
+  alert("Please select a category");
   return;
 }
 if (new Date(date) > new Date()) {
@@ -124,6 +128,34 @@ const deleteExpense = (id) => {
         .then((data) => setExpenses(data));
     })
     .catch((err) => console.error(err));
+};
+const exportCSV = () => {
+  const headers = ["Amount", "Category", "Date", "Note"];
+
+  const rows = dateFilteredExpenses.map((expense) => [
+    expense.amount,
+    expense.category,
+    expense.date,
+    expense.note || "",
+  ]);
+
+  const csvContent = [
+    headers.join(","),
+    ...rows.map((row) => row.join(",")),
+  ].join("\n");
+
+  const blob = new Blob([csvContent], {
+    type: "text/csv;charset=utf-8;",
+  });
+
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "expenses.csv";
+  link.click();
+
+  URL.revokeObjectURL(url);
 };
 const editExpense = (expense) => {
   setTitle(expense.title);
@@ -293,6 +325,16 @@ const totalThisMonth = expenses
 </div>
   )}
   </div>
+  <button
+  onClick={exportCSV}
+  style={{
+    padding: "10px 15px",
+    marginBottom: "15px",
+    cursor: "pointer",
+  }}
+>
+  Export CSV
+</button>
   <div className="filter-card">
 
   <label>Filter By Category</label>
@@ -301,9 +343,9 @@ const totalThisMonth = expenses
     value={filterCategory}
     onChange={(e) => setFilterCategory(e.target.value)}
   >
-    <option value="All">All</option>
+    <option value="">Select Category</option>
     <option value="Food">Food</option>
-    <option value="Travel">Travel</option>
+    <option value="Travel">Transport</option>
     <option value="Shopping">Shopping</option>
     <option value="Bills">Bills</option>
   </select>
@@ -347,6 +389,7 @@ const totalThisMonth = expenses
           <label>Category</label>
           <select value={category}
   onChange={(e) => setCategory(e.target.value)}>
+             <option value=""> Select Category</option>
             <option>Food</option>
             <option>Travel</option>
             <option>Shopping</option>
