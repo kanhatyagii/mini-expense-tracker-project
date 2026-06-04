@@ -14,7 +14,8 @@ db.run(`
     title TEXT,
     amount REAL,
     category TEXT,
-    date TEXT
+    date TEXT,
+    note TEXT
   )
 `);
 

@@ -17,8 +17,10 @@ const [date, setDate] = useState("");
 const [expenses, setExpenses] = useState([]);
 const [filterCategory, setFilterCategory] = useState("All");
 const [editIndex, setEditIndex] = useState(null);
+const [editId, setEditId] = useState(null);
 const [startDate, setStartDate] = useState("");
 const [endDate, setEndDate] = useState("");
+const [note, setNote] = useState("");
 
 useEffect(() => {
   fetch("http://localhost:5000/expenses")
@@ -31,27 +33,52 @@ useEffect(() => {
     });
 }, []);
 const addExpense = () => {
-  if (editIndex !== null) {
-
-    const updatedExpenses = [...expenses];
-
-    updatedExpenses[editIndex] = {
+  if (Number(amount) <= 0) {
+  alert("Amount must be greater than 0");
+  return;
+}
+  if (editId !== null) {
+  fetch(`http://localhost:5000/expenses/${editId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
       title,
       amount,
       category,
       date,
-    };
+      note,
+    }),
+  })
+    .then((res) => res.json())
+    .then(() => {
+      fetch("http://localhost:5000/expenses")
+        .then((res) => res.json())
+        .then((data) => {
+          setExpenses(data);
+        });
+setTitle("");
+setAmount("");
+setCategory("Food");
+setDate("");
+setNote("");
 
-    setExpenses(updatedExpenses);
-    setEditIndex(null);
+      setEditId(null);
+      setEditIndex(null);
 
-  } else {
+    })
+    .catch((err) => console.error(err));
+  return;
+} 
+ else{
 
     const newExpense = {
       title,
       amount,
       category,
       date,
+      note,
     };
 fetch("http://localhost:5000/expenses", {
   method: "POST",
@@ -73,6 +100,7 @@ fetch("http://localhost:5000/expenses", {
   setAmount("");
   setCategory("Food");
   setDate("");
+  setNote("");
 };
 
 const deleteExpense = (indexToDelete) => {
@@ -82,17 +110,23 @@ const deleteExpense = (indexToDelete) => {
 
   setExpenses(updatedExpenses);
 };
-const editExpense = (index) => {
-  const expense = expenses[index];
-
+const editExpense = (expense) => {
   setTitle(expense.title);
   setAmount(expense.amount);
   setCategory(expense.category);
   setDate(expense.date);
+  setNote(expense.note);
 
-  setEditIndex(index);
+  const originalIndex = expenses.findIndex(
+    (e) =>
+      e.title === expense.title &&
+      e.amount === expense.amount &&
+      e.date === expense.date
+  );
+
+  setEditIndex(originalIndex);
+  setEditId(expense.id);
 };
-
 
 
 const totalSpent = expenses.reduce(
@@ -143,14 +177,7 @@ const dateFilteredExpenses = filteredExpenses.filter((expense) => {
   if (!startDate && !endDate) {
     return true;
   }
-const highestExpense =
-  dateFilteredExpenses.length > 0
-    ? Math.max(
-        ...dateFilteredExpenses.map(
-          (expense) => Number(expense.amount)
-        )
-      )
-    : 0;
+
   const expenseDate = new Date(expense.date);
 
   const start = startDate ? new Date(startDate) : null;
@@ -167,7 +194,8 @@ const highestExpense =
   return true;
 });
 
-      const SortedExpenses = [...dateFilteredExpenses].sort(
+
+const SortedExpenses = [...dateFilteredExpenses].sort(
   (a, b) => new Date(b.date) - new Date(a.date)
 );
   return (
@@ -261,7 +289,7 @@ const highestExpense =
     onChange={(e) => setEndDate(e.target.value)}
   />
 
-</div>
+
 </div>
       <div className="card">
 
@@ -293,7 +321,14 @@ const highestExpense =
           <input type="date"  value={date}
   onChange={(e) => setDate(e.target.value)}/>
         </div>
-
+        <label>Note (Optional)</label>
+<input
+  type="text"
+  placeholder="Enter a note"
+  value={note}
+  onChange={(e) => setNote(e.target.value)}
+/>
+</div>
       <button className="btn" onClick={addExpense}>
   {editIndex !== null ? "Update Expense" : "Add Expense"}
 </button>
@@ -311,10 +346,11 @@ const highestExpense =
       <p>Category: {expense.category}</p>
 
       <p>Date: {expense.date}</p>
-
+   
+      <p>Note: {expense.note}</p>
 <button
   className="edit-btn"
-  onClick={() => editExpense(index)}
+  onClick={() => editExpense(expense)}
 >
   Edit
 </button>
@@ -330,5 +366,4 @@ const highestExpense =
     </div>
   );
 }
-
 export default App;

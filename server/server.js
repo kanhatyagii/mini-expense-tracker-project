@@ -13,20 +13,25 @@ app.get("/", (req, res) => {
 });
 app.post("/expenses", (req, res) => {
 
-  const { title, amount, category, date } = req.body;
+  console.log("POST HIT");
+
+  console.log(req.body);
+
+  const { title, amount, category, date, note } = req.body;
 
   db.run(
-    `INSERT INTO expenses (title, amount, category, date)
-     VALUES (?, ?, ?, ?)`,
-    [title, amount, category, date],
+    `INSERT INTO expenses (title, amount, category, date, note)
+     VALUES (?, ?, ?, ?, ?)`,
+    [title, amount, category, date, note],
     function (err) {
 
       if (err) {
+           console.log("SQL ERROR:", err);
         return res.status(500).json({
           error: err.message,
         });
       }
-
+           console.log("INSERT SUCCESS");
       res.status(201).json({
         message: "Expense added successfully",
         id: this.lastID,
@@ -34,6 +39,28 @@ app.post("/expenses", (req, res) => {
     }
   );
 
+});
+app.put("/expenses/:id", (req, res) => {
+  const { title, amount, category, date, note } = req.body;
+  const { id } = req.params;
+
+  db.run(
+    `UPDATE expenses
+     SET title = ?, amount = ?, category = ?, date = ?, note = ?
+     WHERE id = ?`,
+    [title, amount, category, date, note, id],
+    function (err) {
+      if (err) {
+        return res.status(500).json({
+          error: err.message,
+        });
+      }
+
+      res.json({
+        message: "Expense updated successfully",
+      });
+    }
+  );
 });
 app.get("/expenses", (req, res) => {
 
