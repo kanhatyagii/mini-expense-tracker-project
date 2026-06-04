@@ -307,6 +307,12 @@ const totalThisMonth = expenses
 </p>
 
 <p>
+  Transport: {formatCurrency(categoryTotals.Transport || 0)} / {formatCurrency(transportBudget)}
+  {(categoryTotals.Transport || 0) > transportBudget && (
+    <span style={{ color: "red" }}> ⚠️ Budget Exceeded</span>
+  )}
+</p>
+<p>
   Shopping: {formatCurrency(categoryTotals.Shopping || 0)} / {formatCurrency(shoppingBudget)}
   {(categoryTotals.Shopping || 0) > shoppingBudget && (
     <span style={{ color: "red" }}> ⚠️ Budget Exceeded</span>
@@ -316,13 +322,6 @@ const totalThisMonth = expenses
 <p>
   Bills: {formatCurrency(categoryTotals.Bills || 0)} / {formatCurrency(billsBudget)}
   {(categoryTotals.Bills || 0) > billsBudget && (
-    <span style={{ color: "red" }}> ⚠️ Budget Exceeded</span>
-  )}
-</p>
-
-<p>
-  Transport: {formatCurrency(categoryTotals.Transport || 0)} / {formatCurrency(transportBudget)}
-  {(categoryTotals.Transport || 0) > transportBudget && (
     <span style={{ color: "red" }}> ⚠️ Budget Exceeded</span>
   )}
 </p>
@@ -378,7 +377,7 @@ const totalThisMonth = expenses
   >
     <option value="">Select Category</option>
     <option value="Food">Food</option>
-    <option value="Travel">Transport</option>
+    <option value="Transport">Transport</option>
     <option value="Shopping">Shopping</option>
     <option value="Bills">Bills</option>
   </select>
@@ -424,7 +423,7 @@ const totalThisMonth = expenses
   onChange={(e) => setCategory(e.target.value)}>
              <option value=""> Select Category</option>
             <option>Food</option>
-            <option>Travel</option>
+            <option>Transport</option>
             <option>Shopping</option>
             <option>Bills</option>
           </select>
