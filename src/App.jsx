@@ -1,6 +1,6 @@
 import "./App.css";
 import expenseImage from "./assets/expense.jpg";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 
 function App() {
@@ -13,6 +13,17 @@ const [filterCategory, setFilterCategory] = useState("All");
 const [editIndex, setEditIndex] = useState(null);
 const [startDate, setStartDate] = useState("");
 const [endDate, setEndDate] = useState("");
+
+useEffect(() => {
+  fetch("http://localhost:5000/expenses")
+    .then((res) => res.json())
+    .then((data) => {
+      setExpenses(data);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+}, []);
 const addExpense = () => {
   if (editIndex !== null) {
 
@@ -111,7 +122,14 @@ const dateFilteredExpenses = filteredExpenses.filter((expense) => {
   if (!startDate && !endDate) {
     return true;
   }
-
+const highestExpense =
+  dateFilteredExpenses.length > 0
+    ? Math.max(
+        ...dateFilteredExpenses.map(
+          (expense) => Number(expense.amount)
+        )
+      )
+    : 0;
   const expenseDate = new Date(expense.date);
 
   const start = startDate ? new Date(startDate) : null;
