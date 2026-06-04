@@ -1,22 +1,23 @@
-const sqlite3 = require("sqlite3").verbose();
+const { Pool } = require("pg");
 
-const db = new sqlite3.Database("./expense.db", (err) => {
-  if (err) {
-    console.error(err.message);
-  } else {
-    console.log("Connected to SQLite database");
-  }
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
-db.run(`
+pool.query(`
   CREATE TABLE IF NOT EXISTS expenses (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     title TEXT,
     amount REAL,
     category TEXT,
     date TEXT,
     note TEXT
   )
-`);
+`)
+.then(() => console.log("Expenses table ready"))
+.catch(err => console.error(err));
 
-module.exports = db;
+module.exports = { pool };

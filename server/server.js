@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const db = require("./db");
+const { pool } = require("./db");
 
 const app = express();
 
@@ -11,94 +11,78 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.send("Expense Tracker API Running ");
 });
-app.post("/expenses", (req, res) => {
-
-  console.log("POST HIT");
-
-  console.log(req.body);
-
+app.post("/expenses", async (req, res) => {
+try{
+  
   const { title, amount, category, date, note } = req.body;
+ const result = await pool.query(
+      `INSERT INTO expenses (title, amount, category, date, note)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING id`,
+      [title, amount, category, date, note]
+    );
 
-  db.run(
-    `INSERT INTO expenses (title, amount, category, date, note)
-     VALUES (?, ?, ?, ?, ?)`,
-    [title, amount, category, date, note],
-    function (err) {
-
-      if (err) {
-           console.log("SQL ERROR:", err);
-        return res.status(500).json({
-          error: err.message,
-        });
-      }
-           console.log("INSERT SUCCESS");
-      res.status(201).json({
-        message: "Expense added successfully",
-        id: this.lastID,
-      });
-    }
-  );
-
+    res.status(201).json({
+      message: "Expense added successfully",
+      id: result.rows[0].id,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: err.message });
+  }
 });
-app.put("/expenses/:id", (req, res) => {
-  const { title, amount, category, date, note } = req.body;
-  const { id } = req.params;
+  
+app.put("/expenses/:id", async (req, res) => {
+  try {
+    const { title, amount, category, date, note } = req.body;
+    const { id } = req.params;
 
-  db.run(
-    `UPDATE expenses
-     SET title = ?, amount = ?, category = ?, date = ?, note = ?
-     WHERE id = ?`,
-    [title, amount, category, date, note, id],
-    function (err) {
-      if (err) {
-        return res.status(500).json({
-          error: err.message,
-        });
-      }
+    await pool.query(
+      `UPDATE expenses
+       SET title=$1, amount=$2, category=$3, date=$4, note=$5
+       WHERE id=$6`,
+      [title, amount, category, date, note, id]
+    );
 
-      res.json({
-        message: "Expense updated successfully",
-      });
-    }
-  );
+    res.json({
+      message: "Expense updated successfully",
+    });
+  } catch (err) {
+    res.status(500).json({
+      error: err.message,
+    });
+  }
 });
-app.delete("/expenses/:id", (req, res) => {
-  const { id } = req.params;
+app.delete("/expenses/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
 
-  db.run(
-    "DELETE FROM expenses WHERE id = ?",
-    [id],
-    function (err) {
-      if (err) {
-        return res.status(500).json({
-          error: err.message,
-        });
-      }
+    await pool.query(
+      "DELETE FROM expenses WHERE id=$1",
+      [id]
+    );
 
-      res.json({
-        message: "Expense deleted successfully",
-      });
-    }
-  );
+    res.json({
+      message: "Expense deleted successfully",
+    });
+  } catch (err) {
+    res.status(500).json({
+      error: err.message,
+    });
+  }
 });
-app.get("/expenses", (req, res) => {
+app.get("/expenses", async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT * FROM expenses ORDER BY id DESC"
+    );
 
-  db.all(
-    "SELECT * FROM expenses",
-    [],
-    (err, rows) => {
-
-      if (err) {
-        return res.status(500).json({
-          error: err.message,
-        });
-      }
-
-      res.json(rows);
-
-    }
-  );
-
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({
+      error: err.message,
+    });
+  }
 });
 app.listen(5000, () => {
   console.log("Server running on port 5000");
