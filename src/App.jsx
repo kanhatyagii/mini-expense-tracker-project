@@ -1,7 +1,13 @@
 import "./App.css";
 import expenseImage from "./assets/expense.jpg";
 import React, { useState, useEffect } from "react";
-
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  Legend,
+} from "recharts";
 
 function App() {
 const [title, setTitle] = useState("");
@@ -109,6 +115,21 @@ const highestExpense =
 
   return acc;
 }, {});
+const chartData = Object.entries(categoryTotals).map(
+  ([category, total]) => ({
+    name: category,
+    value: total,
+  })
+);
+const COLORS = [
+  "#3B82F6", // Blue
+  "#10B981", // Green
+  "#F59E0B", // Yellow
+  "#EF4444", // Red
+  "#8B5CF6", // Purple
+  "#06B6D4", // Cyan
+];
+
 
 const filteredExpenses =
   filterCategory === "All"
@@ -180,7 +201,32 @@ const highestExpense =
     <strong>{category}:</strong> ₹{total}
   </p>
 ))}
-  
+  <div className="chart-container">
+  <h3>Expense Distribution</h3>
+
+  <PieChart width={400} height={300}>
+  <Pie
+  data={chartData}
+  dataKey="value"
+  nameKey="name"
+  cx="50%"
+  cy="50%"
+  outerRadius={100}
+  label
+>
+  {chartData.map((entry, index) => (
+    <Cell
+      key={index}
+      fill={COLORS[index % COLORS.length]}
+    />
+  ))}
+</Pie>
+
+    <Tooltip />
+    <Legend />
+  </PieChart>
+</div>
+
   <div className="filter-card">
 
   <label>Filter By Category</label>
