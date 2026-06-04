@@ -62,6 +62,25 @@ app.put("/expenses/:id", (req, res) => {
     }
   );
 });
+app.delete("/expenses/:id", (req, res) => {
+  const { id } = req.params;
+
+  db.run(
+    "DELETE FROM expenses WHERE id = ?",
+    [id],
+    function (err) {
+      if (err) {
+        return res.status(500).json({
+          error: err.message,
+        });
+      }
+
+      res.json({
+        message: "Expense deleted successfully",
+      });
+    }
+  );
+});
 app.get("/expenses", (req, res) => {
 
   db.all(

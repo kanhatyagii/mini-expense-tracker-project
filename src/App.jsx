@@ -107,12 +107,23 @@ fetch("http://localhost:5000/expenses", {
   setNote("");
 };
 
-const deleteExpense = (indexToDelete) => {
-  const updatedExpenses = expenses.filter(
-    (_, index) => index !== indexToDelete
-  );
-
-  setExpenses(updatedExpenses);
+const formatCurrency = (amount) => {
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0,
+  }).format(amount);
+};
+const deleteExpense = (id) => {
+  fetch(`http://localhost:5000/expenses/${id}`, {
+    method: "DELETE",
+  })
+    .then(() => {
+      fetch("http://localhost:5000/expenses")
+        .then((res) => res.json())
+        .then((data) => setExpenses(data));
+    })
+    .catch((err) => console.error(err));
 };
 const editExpense = (expense) => {
   setTitle(expense.title);
@@ -234,25 +245,26 @@ const totalThisMonth = expenses
   <h2>Expense Summary</h2>
 
   <p>
-    <strong>Total Spent:</strong> ₹{totalSpent}
+    <strong>Total Spent:</strong> {formatCurrency(totalSpent)}
   </p>
 <p>
-  <strong>Total This Month:</strong> ₹{totalThisMonth}
+  <strong>Total This Month:</strong> {formatCurrency(totalThisMonth)}
 
 </p>
   <p>
-    <strong>Highest Expense:</strong> ₹{highestExpense}
+    <strong>Highest Expense:</strong> {formatCurrency(highestExpense)}
   </p>
   <h3>Category Totals</h3>
 
 {Object.entries(categoryTotals).map(([category, total]) => (
   <p key={category}>
-    <strong>{category}:</strong> ₹{total}
+    <strong>{category}:</strong> {formatCurrency(total)}
   </p>
 ))}
   <div className="chart-container">
   <h3>Expense Distribution</h3>
 
+{chartData.length > 0 ? (
   <PieChart width={400} height={300}>
   <Pie
   data={chartData}
@@ -274,8 +286,13 @@ const totalThisMonth = expenses
     <Tooltip />
     <Legend />
   </PieChart>
+  ) : (
+  <div className="empty-chart">
+    <h3>No Expenses Yet</h3>
+    <p>Add expenses to view chart</p>
 </div>
-
+  )}
+  </div>
   <div className="filter-card">
 
   <label>Filter By Category</label>
@@ -362,7 +379,7 @@ const totalThisMonth = expenses
     <div className="expense-item" key={index}>
       <h3>{expense.title}</h3>
 
-      <p>Amount: ₹{expense.amount}</p>
+      <p>Amount: {formatCurrency(expense.amount)}</p>
 
       <p>Category: {expense.category}</p>
 
@@ -377,7 +394,7 @@ const totalThisMonth = expenses
 </button>
       <button
   className="delete-btn"
-  onClick={() => deleteExpense(index)}
+  onClick={() => deleteExpense(expense.id)}
 >
   Delete
 </button>
@@ -386,5 +403,5 @@ const totalThisMonth = expenses
 </div>
     </div>
   );
-}
+  }
 export default App;

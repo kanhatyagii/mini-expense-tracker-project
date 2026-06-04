@@ -208,3 +208,14 @@ body {
   border-radius: 10px;
   border: 1px solid #ddd;
 }
+.empty-chart {
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  color: #666;
+  margin-top: 10px;
+}
