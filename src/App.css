@@ -39,10 +39,13 @@ body {
   transform: scale(1.05);
 }
 
-.heading {
-  font-size: 56px;
-  font-weight: 700;
-  color: #1e1e3f;
+.heading{
+    font-size:56px;
+    font-weight:700;
+    color:#1e1e3f;
+    line-height:1.2;
+    text-align:center;
+    margin:20px 0 10px;
 }
 
 .subheading {
@@ -218,4 +221,17 @@ body {
   border-radius: 10px;
   color: #666;
   margin-top: 10px;
+}
+@media (max-width:768px){
+
+    .heading{
+        font-size:42px;
+        line-height:1.2;
+    }
+
+    .subheading{
+        font-size:18px;
+        padding:0 15px;
+    }
+
 }
